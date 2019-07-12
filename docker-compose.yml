@@ -1,0 +1,31 @@
+version: '3'
+
+services:  
+  web73:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - "./web:/var/www/html"
+      - "./conf/sites-enabled:/etc/apache2/sites-enabled"
+    ports:
+      - "1024:80"
+    depends_on:
+       - mysql57
+    labels:
+      kompose.service.type: nodeport
+    links:
+      - mysql57
+  mysql57:
+    image: 'mysql:5.7.25'
+    volumes:
+      - "./data:/var/lib/mysql:rw"
+    environment:
+      - "MYSQL_DATABASE=test"
+      - "MYSQL_USER=root"
+      - "MYSQL_PASSWORD=root"
+      - "MYSQL_ROOT_PASSWORD=example"
+      - "ALLOW_EMPTY_PASSWORD=no"
+    ports:
+      - "3306:3306"
+    
